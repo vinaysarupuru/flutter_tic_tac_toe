@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class TicTacToeData extends ChangeNotifier {
@@ -5,6 +7,7 @@ class TicTacToeData extends ChangeNotifier {
   String currentPlayer = "X";
   String? winner;
   bool isDraw = false;
+  bool confettiActive = false;
 
   void makeMove(int index) {
     if (board[index] == "" && winner == null && !isDraw) {
@@ -36,8 +39,16 @@ class TicTacToeData extends ChangeNotifier {
       String p3 = board[position[2]];
       if (p1 != "" && p1 == p2 && p2 == p3) {
         winner = p1;
+        confettiActive = true;
+        Timer(const Duration(seconds: 5), () {
+          confettiActive = false;
+          notifyListeners();
+        });
         break;
       }
+    }
+    if (winner != null) {
+      notifyListeners();
     }
   }
 
@@ -52,6 +63,7 @@ class TicTacToeData extends ChangeNotifier {
     currentPlayer = "X";
     winner = null;
     isDraw = false;
+    confettiActive = false;
     notifyListeners();
   }
 }
